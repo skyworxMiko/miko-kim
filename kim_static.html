@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="id" class="light-style customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="./assets/" data-template="vertical-menu-template">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Aplikasi KIM Static</title>
+    <meta name="description" content="" />
+    <link rel="icon" type="image/x-icon" href="./logo.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+
+    <!-- Icons (CDN Fallback) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="./assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="./assets/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="./assets/vendor/fonts/flag-icons.css" />
+
+    <!-- Core CSS (Bootstrap CDN Fallback) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="./assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="./assets/css/demo.css" />
+    <style>
+/* Reset dan dasar */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', 'Arial Rounded MT', sans-serif;
+    height: 100%;
+}
+
+/* ===== PANEL KIRI ===== */
+.left-panel {
+    background: linear-gradient(180deg, #2d1b2e 0%, #49313c 50%, #2d1b2e 100%);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    gap: 6px;
+    overflow: hidden;
+}
+
+/* --- Kotak Angka Terakhir --- */
+.angkaTerakhir {
+    border-radius: 14px;
+    flex-shrink: 0;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid rgba(255, 200, 100, 0.5);
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    backdrop-filter: blur(6px);
+    color: white;
+    font-weight: bold;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+}
+
+.angkaTerakhir::before {
+    content: '';
+    position: absolute;
+    top: -30px; left: -30px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(255,200,100,0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.resultColorTerakhir {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.resultAngkaTerakhir {
+    font-size: 90px;
+    font-weight: 900;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(255,255,255,0.5), 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* --- Grid Tombol Angka --- */
+.number-label {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(255,220,180,0.85);
+    text-align: center;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.angkaDitekan {
+    flex-grow: 1;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a0f0f 0%, #1F1717 100%);
+    border-radius: 12px;
+    border: 2px solid rgba(255, 235, 216, 0.25);
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.number-list {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    gap: 3px;
+    list-style: none;
+    padding: 5px;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.number {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffd4d4, #FFC5C5);
+    color: #2d0000;
+    font-weight: 700;
+    font-size: clamp(12px, 1.2vw, 17px);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1.5px solid rgba(200,100,100,0.4);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.number.active-number-btn {
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.4), 0 0 12px rgba(255,255,255,0.6);
+    color: #fff !important;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    border: 2px solid rgba(255,255,255,0.8) !important;
+}
+
+.number:hover {
+    transform: scale(1.22);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.5), 0 0 10px rgba(255,180,180,0.4);
+    filter: brightness(1.2);
+    z-index: 10;
+    position: relative;
+}
+
+.number:active {
+    transform: scale(0.95);
+}
+
+/* --- Pilihan Warna --- */
+.pilihWarnaKupon {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: rgba(0,0,0,0.2);
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.color {
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid rgba(255,255,255,0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.color.active-color {
+    transform: scale(1.3);
+    border-color: #ffd700;
+    box-shadow: 0 0 15px rgba(255,215,0,0.8), 0 4px 12px rgba(0,0,0,0.6);
+    z-index: 2;
+    position: relative;
+}
+
+.color:hover {
+    transform: scale(1.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    border-color: rgba(255,255,255,0.8);
+}
+
+/* --- Aturan Main --- */
+.kotakAturan {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: rgba(0,0,0,0.2);
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.pilihAturan {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(145deg, #2a2020, #1F1717);
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    border-radius: 8px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.pilihAturan.active-aturan {
+    background: linear-gradient(145deg, #e94560, #c2294a);
+    border-color: #ffd700;
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 0 15px rgba(255,215,0,0.6), 0 4px 12px rgba(233,69,96,0.6);
+    color: #fff;
+    z-index: 2;
+}
+
+.pilihAturan:hover {
+    background: linear-gradient(145deg, #e94560, #c2294a);
+    border-color: #e94560;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(233,69,96,0.4);
+}
+
+/* ===== PANEL KANAN ===== */
+.judulPermainan {
+    background: linear-gradient(180deg, #0f0a0a 0%, #1F1717 100%);
+    height: 100vh;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.resultColor {
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.resultAturan {
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+}
+
+.result {
+    font-size: 60px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.angka-grid-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.angka-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 10px;
+    justify-items: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.angka-grid .picked-number {
+    width: 65px;
+    height: 65px;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 50%;
+    background-color: transparent;
+    color: transparent;
+    border: 1px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.angka-grid .picked-number.filled {
+    border: 2px solid currentColor;
+    box-shadow: 0 0 12px rgba(255,255,255,0.15);
+}
+
+/* Warna kupon yang dipilih */
+.filled.red   { background-color: #F7418F; color: white; border-color: #F7418F; box-shadow: 0 0 10px rgba(247,65,143,0.4); }
+.filled.blue  { background-color: #96C9F4; color: black; border-color: #96C9F4; box-shadow: 0 0 10px rgba(150,201,244,0.4); }
+.filled.green { background-color: green;   color: white; border-color: green;   box-shadow: 0 0 10px rgba(0,128,0,0.4); }
+.filled.yellow{ background-color: yellow;  color: black; border-color: yellow;  box-shadow: 0 0 10px rgba(255,255,0,0.4); }
+.filled.white { background-color: white;   color: black; border-color: white;   box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+
+/* Marquee */
+marquee {
+    font-size: 48px;
+    font-weight: bold;
+    color: white;
+    padding: 8px 0;
+}
+
+/* Modal Aturan */
+.modal-content-aturan {
+    background-color: rgb(105, 104, 104);
+    padding: 20px;
+    border-radius: 10px;
+    overflow: auto;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    width: 50%;
+    max-height: 80%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    gap: 20px;
+}
+
+#imgAturan {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #fff;
+    border-radius: 8px;
+}
+
+/* Pesan alert */
+.pesanAlert { text-align: center; }
+
+/* Animasi number-show (legacy, tidak dipakai tapi dibiarkan) */
+.number-show {
+    background-color: #f8f8f8;
+    transform: scale(10.0);
+    transition: all 1.5s ease;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    font-size: 30px;
+    z-index: 1000;
+}
+
+/* Responsif */
+@media screen and (max-width: 768px) {
+    .number {
+        font-size: 14px;
+    }
+    .angka-grid .picked-number {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    .resultColor, .resultAturan {
+        font-size: 28px;
+    }
+    marquee {
+        font-size: 30px;
+    }
+}
+</style>
+    <link rel="stylesheet" href="./assets/css/slick.css" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="./assets/vendor/libs/node-waves/node-waves.css" />
+    <link rel="stylesheet" href="./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="./assets/vendor/libs/typeahead-js/typeahead.css" />
+    <link rel="stylesheet" href="./assets/vendor/libs/@form-validation/umd/styles/index.min.css" />
+
+    <!-- Page CSS -->
+    <link rel="stylesheet" href="./assets/vendor/css/pages/page-auth.css" />
+
+    <!-- Helpers -->
+    <script src="./assets/vendor/js/helpers.js"></script>
+    <script src="./assets/vendor/js/template-customizer.js"></script>
+    <script src="./assets/js/config.js"></script>
+    <style>
+        .promo-modal-content { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: none; border-radius: 0; padding: 0 !important; overflow: hidden; color: white; max-width: 100%; width: 100vw; height: 100vh; margin: 0; animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; display: flex; flex-direction: column; }
+        @keyframes modalPop { 0% { opacity: 0; } 100% { opacity: 1; } }
+        .promo-banner { background: linear-gradient(45deg, #e94560, #0f3460); position: relative; padding: 60px 20px; text-align: center; border-bottom: 5px solid #ffd700; overflow: hidden; }
+        .promo-banner-overlay { position: relative; z-index: 2; }
+        .promo-banner::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%); animation: spin 15s linear infinite; z-index: 1; pointer-events: none; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .promo-title { font-size: 60px; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
+        .promo-subtitle { font-size: 32px; color: #ffd700; font-weight: 700; text-shadow: 0 3px 15px rgba(0,0,0,0.6); }
+        .promo-body { padding: 40px 20px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .promo-contact { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; margin-bottom: 50px; }
+        .contact-item { background: rgba(255,255,255,0.1); padding: 15px 30px; border-radius: 50px; font-size: 22px; display: flex; align-items: center; gap: 15px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); transition: transform 0.3s ease; }
+        .contact-item:hover { transform: translateY(-5px); background: rgba(255,255,255,0.2); }
+        .contact-icon { color: #e94560; font-size: 24px; }
+        .promo-tagline { margin-bottom: 50px; }
+        .highlight-text { font-size: 36px; font-weight: bold; color: #00fff5; display: block; margin-bottom: 10px; text-shadow: 0 0 15px rgba(0,255,245,0.5); }
+        .promo-tagline p { font-size: 24px; color: #a0aab2; font-style: italic; margin: 0; }
+        .promo-message-box { background: rgba(233, 69, 96, 0.15); border-left: 8px solid #e94560; padding: 25px 40px; border-radius: 0 15px 15px 0; display: flex; align-items: center; gap: 25px; justify-content: center; box-shadow: inset 0 0 30px rgba(0,0,0,0.3); max-width: 80%; }
+        .message-icon { font-size: 40px; color: #e94560; animation: pulseIcon 2s infinite; }
+        @keyframes pulseIcon { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        /* Animasi fullscreen saat angka diklik */
+        .number-show-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, rgba(20,20,40,0.97) 0%, rgba(10,10,25,0.99) 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: overlayFadeIn 0.2s ease forwards;
+        }
+        @keyframes overlayFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .number-show-overlay.fade-out {
+            animation: overlayFadeOut 0.4s ease forwards;
+        }
+        @keyframes overlayFadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .number-show-label {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 10px;
+            animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .number-show-badge {
+            font-size: 20px;
+            font-weight: 600;
+            padding: 6px 24px;
+            border-radius: 30px;
+            margin-bottom: 30px;
+            animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .number-show-number {
+            font-size: 260px;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1;
+            animation: numberPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            text-shadow: 0 0 60px rgba(255,255,255,0.3), 0 0 120px rgba(255,255,255,0.1);
+        }
+        @keyframes numberPop {
+            0% { transform: scale(0.3); opacity: 0; }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .number-show-rings {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.05);
+            animation: ringPulse 1.5s ease-out infinite;
+        }
+        .number-show-rings:nth-child(2) { animation-delay: 0.3s; width: 650px; height: 650px; }
+        .number-show-rings:nth-child(3) { animation-delay: 0.6s; width: 800px; height: 800px; }
+        @keyframes ringPulse {
+            0% { transform: scale(0.8); opacity: 0.4; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+        .promo-message { font-size: 32px; color: #fff; font-weight: 700; }
+        .promo-footer { background: #0f3460; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .copyright-text { font-size: 16px; color: #6c757d; margin: 0; }
+        .promo-actions { display: flex; gap: 15px; }
+        .btn-promo { padding: 12px 30px; font-size: 20px; border-radius: 30px; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; font-weight: bold; }
+        .btn-promo:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+        .edit-modal-content { background: #16213e; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 30px; color: white; box-shadow: 0 15px 35px rgba(0,0,0,0.5); width: 100%; max-width: 500px; margin: auto; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .resultAngkaTerakhir { font-size: 110px; font-weight: bold; line-height: 1; text-shadow: 0 0 30px rgba(255,255,255,0.4); }
+        .edit-modal-title { font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 20px; text-align: center; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #e94560; padding-bottom: 10px; }
+        .custom-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 8px; padding: 10px 15px; transition: all 0.3s; }
+        .custom-input:focus { background: rgba(255,255,255,0.1); border-color: #00fff5; box-shadow: 0 0 10px rgba(0,255,245,0.2); outline: none; color: white; }
+        .custom-input::placeholder { color: rgba(255,255,255,0.3); font-style: italic; }
+        .custom-label { font-size: 13px; font-weight: 600; color: #a0aab2; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+        .btn-edit-save { background: linear-gradient(45deg, #00fff5, #00b8ff); color: #000; border: none; font-weight: bold; padding: 8px 25px; border-radius: 25px; transition: all 0.3s; }
+        .btn-edit-save:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,255,245,0.4); }
+        .btn-edit-cancel { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 25px; border-radius: 25px; transition: all 0.3s; }
+        .btn-edit-cancel:hover { background: rgba(255,255,255,0.1); color: white; }
+        /* Modal overlay - center di layar */
+        #myModalAturan {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1060;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+        }
+        @keyframes popIn {
+            0%   { opacity:0; transform: scale(0.75) translateY(30px); }
+            70%  { transform: scale(1.04) translateY(-4px); }
+            100% { opacity:1; transform: scale(1) translateY(0); }
+        }
+        /* Efek bergerak di modal aturan */
+        @keyframes floatIcon {
+            0%,100% { transform: translateY(0px) scale(1); }
+            50%      { transform: translateY(-10px) scale(1.08); }
+        }
+        @keyframes rotateBg {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes shimmer {
+            0%,100% { opacity: 0.15; }
+            50%      { opacity: 0.45; }
+        }
+        #aturan-icon { animation: floatIcon 2.5s ease-in-out infinite; display: block; font-size: 72px !important; }
+        .aturan-glow-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,200,100,0.2);
+            animation: ringPulse 2s ease-out infinite;
+            pointer-events: none;
+        }
+        .aturan-rotate-bg {
+            position: absolute;
+            top: -60%; left: -60%;
+            width: 220%; height: 220%;
+            background: radial-gradient(circle at 40% 40%, rgba(233,69,96,0.08) 0%, transparent 55%),
+                        radial-gradient(circle at 80% 80%, rgba(255,200,100,0.06) 0%, transparent 45%);
+            animation: rotateBg 12s linear infinite;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Content -->
+    <div class="container-fluid p-0 m-0" style="height: 100vh; overflow: hidden;">
+        <div class="card shadow border-0 rounded-0 h-100">
+            <div class="card-body p-0 h-100">
+                <div class="row g-0 h-100">
+                                <!-- KIRI: Kontrol Konsumen -->
+                                <div class="col-lg-4 col-md-4 col-sm-12 left-panel">
+                                    <!-- Area Angka Terakhir -->
+                                    <div class="angkaTerakhir mb-1" style="flex-shrink: 0;">
+                                        <div style="width:calc(100% - 20px); text-align:center; font-size:14px; font-weight:700; letter-spacing:2px; color:rgba(255,220,180,0.9); text-transform:uppercase; background:rgba(255,255,255,0.05); border:1px solid rgba(255,200,100,0.2); border-radius:8px; padding:4px 0; margin-top:10px;">✦ ANGKA TERAKHIR ✦</div>
+                                        <div class="resultColorTerakhir" id="resultColorTerakhir" hidden></div>
+                                        <div class="resultAngkaTerakhir" id="resultAngkaTerakhir"></div>
+                                        <div class="pesanAlert"></div>
+                                    </div>
+                                    <!-- Daftar Tombol Angka -->
+                                    <div style="width:100%; text-align:center; font-size:14px; font-weight:700; letter-spacing:2px; color:rgba(255,220,180,0.9); text-transform:uppercase; background:rgba(255,255,255,0.05); border:1px solid rgba(255,200,100,0.2); border-radius:8px; padding:6px 0; flex-shrink:0;">✦ PILIH ANGKA YANG KELUAR DISINI ✦</div>
+                                    <div class="angkaDitekan">
+                                        <ul class="number-list" id="number-list-container">
+                                        </ul>
+                                    </div>
+                                    <!-- Pilihan Warna & Aturan Main -->
+                                    <div class="row" style="flex-shrink: 0;">
+                                        <div class="col-6 text-center">
+                                            <p class="text-white"><b>PILIH WARNA KUPON</b></p>
+                                            <div class="pilihWarnaKupon">
+                                                <div class="color" onclick="setColor('red', this)" style="background-color: #F7418F;"></div>
+                                                <div class="color" onclick="setColor('blue', this)" style="background-color: #96C9F4;"></div>
+                                                <div class="color" onclick="setColor('green', this)" style="background-color: green;"></div>
+                                                <div class="color" onclick="setColor('yellow', this)" style="background-color: yellow;"></div>
+                                                <div class="color" onclick="setColor('white', this)" style="background-color: white;"></div>
+                                            </div>
+                                            <div id="datetime-container1" style="font-size: 13px; font-weight: 600; color: rgba(255,220,180,0.85); margin-top: 8px; line-height: 1.5;"></div>
+                                        </div>
+                                        <div class="col-6 text-center">
+                                            <p class="text-white"><b>ATURAN MAIN</b></p>
+                                            <div class="kotakAturan">
+                                                <div class="pilihAturan" onclick="aturanmain('aturan1', this)">A</div>
+                                                <div class="pilihAturan" onclick="aturanmain('aturan2', this)">B</div>
+                                                <div class="pilihAturan" onclick="aturanmain('aturan3', this)">C</div>
+                                                <div class="pilihAturan" onclick="aturanmain('aturan4', this)">D</div>
+                                                <div class="pilihAturan" onclick="aturanmain('aturan5', this)">E</div>
+                                                <div class="pilihAturan" onclick="aturanmain('aturan6', this)">F</div>
+                                                <div class="pilihAturan" onclick="aturanmain('aturan7', this)">G</div>
+                                                <div class="pilihAturan" onclick="aturanmain('aturan8', this)">H</div>
+                                                <div class="pilihAturan" onclick="aturanmain('aturan9', this)">I</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Tombol Aksi -->
+                                    <div style="flex-shrink:0;">
+                                        <div class="d-flex justify-content-between gap-2">
+                                        <a href="#" onclick="openModal()" class="btn btn-success fw-bold flex-fill" style="border-radius:10px; letter-spacing:1px;">Istirahat</a>
+                                        <a href="#" onclick="location.reload()" class="btn btn-warning fw-bold flex-fill" style="border-radius:10px; letter-spacing:1px;">Keluar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- KANAN: Tampilan Angka Terpilih & Marquee -->
+                                <div class="col-lg-8 col-md-8 col-sm-12 judulPermainan">
+                                    <!-- Aturan Aktif & Warna -->
+                                    <div class="resultColor" id="resultColor"></div>
+                                    <div class="resultAturan" id="resultAturan"></div>
+
+                                    <!-- Grid Angka Terpilih -->
+                                    <div class="angka-grid-wrapper">
+                                        <div class="angka-grid" id="grid-container">
+                                        </div>
+                                    </div>
+                                    <!-- Marquee Pesan -->
+                                    <div class="text-center w-100 text-white" style="font-size: 22px;">
+                                        <marquee id="info-marquee">Pesan Management</marquee>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal Aturan Main -->
+                            <div id="myModalAturan" onclick="if(event.target===this) closeModalAturan()">
+                                <div id="aturan-modal-box" style="
+                                    background: linear-gradient(135deg, #1a0f1f 0%, #2d1b2e 60%, #16213e 100%);
+                                    border: 1px solid rgba(255,200,100,0.3);
+                                    border-radius: 20px;
+                                    padding: 0;
+                                    width: 90%;
+                                    max-width: 720px;
+                                    max-height: 92vh;
+                                    overflow: hidden;
+                                    position: relative;
+                                    box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 60px rgba(233,69,96,0.2);
+                                    animation: popIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+                                ">
+                                    <!-- Animated rotating background -->
+                                    <div class="aturan-rotate-bg"></div>
+                                    <!-- Pulsing rings -->
+                                    <div class="aturan-glow-ring" style="width:300px;height:300px;top:calc(50% - 150px);left:calc(50% - 150px);animation-delay:0s;"></div>
+                                    <div class="aturan-glow-ring" style="width:420px;height:420px;top:calc(50% - 210px);left:calc(50% - 210px);animation-delay:0.4s;"></div>
+                                    <!-- Header -->
+                                    <div style="background: linear-gradient(90deg, #e94560, #c2294a); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;">
+                                        <div style="display:flex; align-items:center; gap:10px;">
+                                            <span style="font-size:22px;">📋</span>
+                                            <span style="color:white; font-weight:800; font-size:16px; letter-spacing:1px;">ATURAN MAIN</span>
+                                        </div>
+                                        <button onclick="closeModalAturan()" style="background:rgba(255,255,255,0.2); border:none; color:white; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center;">✕</button>
+                                    </div>
+                                    <!-- Body -->
+                                    <div style="padding: 20px 24px; overflow-y:auto; max-height: calc(88vh - 70px);">
+                                        <div style="text-align:center; margin-bottom:20px;">
+                                            <div id="aturan-icon" style="font-size:72px; margin-bottom:12px;"></div>
+                                            <div id="aturan-title-display" style="color:#ffd700; font-size:26px; font-weight:900; letter-spacing:2px; text-shadow: 0 0 20px rgba(255,215,0,0.5);"></div>
+                                        </div>
+                                        <!-- Statistik angka -->
+                                        <div id="aturan-stats" style="display:flex; justify-content:center; gap:20px; margin-bottom:24px;"></div>
+                                        <!-- Deskripsi -->
+                                        <div id="aturan-desc" style="background:rgba(255,255,255,0.05); border-left:4px solid #e94560; border-radius:0 14px 14px 0; padding:20px 24px; color:rgba(255,255,255,0.88); font-size:17px; line-height:1.8;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="myModal" class="modal" style="z-index: 1050;">
+                                <div class="modal-content promo-modal-content">
+                                    <!-- Banner Area -->
+                                    <div class="promo-banner">
+                                        <div class="promo-banner-overlay">
+                                            <h1 id="info-nama-management" class="promo-title">Nama Management</h1>
+                                            <h2 id="info-nama-partner" class="promo-subtitle">Nama Partner</h2>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Info Area -->
+                                    <div class="promo-body">
+                                        <div class="promo-contact">
+                                            <div class="contact-item">
+                                                <i class="fas fa-phone-alt contact-icon"></i>
+                                                <span id="info-telp">Telp Management</span>
+                                            </div>
+                                            <div class="contact-item">
+                                                <i class="fas fa-map-marker-alt contact-icon"></i>
+                                                <span id="info-alamat">Alamat Management</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="promo-tagline">
+                                            <span class="highlight-text">Dendang Pantun & Lagu Berhadiah</span>
+                                            <p>Lengkapi Acara Anda Bersama Kami...!!!</p>
+                                        </div>
+                                        
+                                        <div class="promo-message-box">
+                                            <i class="fas fa-bullhorn message-icon"></i>
+                                            <h3 id="info-pesan" class="promo-message">Pesan Default Management</h3>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Footer Area -->
+                                    <div class="promo-footer">
+                                        <h4 class="copyright-text">© Aplikasi KIM | DCODE TECH INDONESIA | 082287483950</h4>
+                                        <div class="promo-actions">
+                                            <button onclick="openModalEditInfo()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.3); color:white; font-size:13px; font-weight:600; padding:8px 20px; border-radius:20px; cursor:pointer; letter-spacing:0.5px; transition:all 0.2s; display:flex; align-items:center; gap:6px; backdrop-filter:blur(4px);"><i class="fas fa-edit"></i> Edit</button>
+                                            <button onclick="closeModal()" style="background:linear-gradient(45deg,#f5a623,#f7c257); border:none; color:#000; font-size:13px; font-weight:700; padding:8px 22px; border-radius:20px; cursor:pointer; letter-spacing:0.5px; transition:all 0.2s; box-shadow:0 3px 10px rgba(245,166,35,0.4);">Kembali Main</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal Edit Info -->
+                            <div id="myModalEditInfo" class="modal" style="z-index: 1050; align-items: center; justify-content: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);">
+                                <div class="edit-modal-content">
+                                    <h3 class="edit-modal-title">Edit Informasi</h3>
+                                    <div class="mb-3 text-start">
+                                        <label class="custom-label">Nama Management</label>
+                                        <input type="text" id="input-nama-management" class="form-control custom-input" placeholder="Contoh: KIM MINANG SAKATO">
+                                    </div>
+                                    <div class="mb-3 text-start">
+                                        <label class="custom-label">Nama Partner</label>
+                                        <input type="text" id="input-nama-partner" class="form-control custom-input" placeholder="Contoh: BERSAMA VIOLETTA">
+                                    </div>
+                                    <div class="mb-3 text-start">
+                                        <label class="custom-label">No Telp</label>
+                                        <input type="text" id="input-telp" class="form-control custom-input" placeholder="Contoh: 0812-3456-7890">
+                                    </div>
+                                    <div class="mb-3 text-start">
+                                        <label class="custom-label">Alamat</label>
+                                        <input type="text" id="input-alamat" class="form-control custom-input" placeholder="Contoh: Padang, Sumatera Barat">
+                                    </div>
+                                    <div class="mb-4 text-start">
+                                        <label class="custom-label">Pesan / Teks Berjalan</label>
+                                        <textarea id="input-pesan" class="form-control custom-input" rows="3" placeholder="Contoh: Selamat Datang di Acara KIM Dendang Minang"></textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-end gap-2 mt-2">
+                                        <button class="btn-edit-cancel" onclick="closeModalEditInfo()">Batal</button>
+                                        <button class="btn-edit-save" onclick="saveInfo()">Simpan</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="overlay" class="overlay"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / Content -->
+
+    <!-- Core JS (CDN Fallback) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="./assets/vendor/libs/popper/popper.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="./assets/vendor/js/bootstrap.js"></script>
+    <script src="./assets/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="./assets/vendor/libs/hammer/hammer.js"></script>
+    <script src="./assets/vendor/libs/i18n/i18n.js"></script>
+    <script src="./assets/vendor/libs/typeahead-js/typeahead.js"></script>
+    <script src="./assets/vendor/js/menu.js"></script>
+
+    <!-- Vendors JS -->
+    <script src="./assets/vendor/libs/@form-validation/umd/bundle/popular.min.js"></script>
+    <script src="./assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js"></script>
+    <script src="./assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js"></script>
+
+    <!-- Main JS -->
+    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/slick.min.js"></script>
+
+    <!-- Page JS -->
+    <script src="./assets/js/pages-auth.js"></script>
+
+    <script>
+        // DOM Generation untuk grid dan list angka
+        document.addEventListener('DOMContentLoaded', () => {
+            const listContainer = document.getElementById('number-list-container');
+            const gridContainer = document.getElementById('grid-container');
+            
+            for (let i = 1; i <= 90; i++) {
+                // List
+                const li = document.createElement('li');
+                li.className = 'number';
+                li.id = 'number' + i;
+                li.textContent = i;
+                li.onclick = () => { showNumber(i); toggleColor(i); };
+                listContainer.appendChild(li);
+
+                // Grid
+                const gridItem = document.createElement('div');
+                gridItem.className = 'picked-number';
+                gridItem.id = 'picked-' + i;
+                gridContainer.appendChild(gridItem);
+            }
+
+            // Hitung ukuran lingkaran agar selalu bulat sempurna & mengisi penuh kotak
+            function sizeNumberGrid() {
+                const container = document.querySelector('.angkaDitekan');
+                const grid = document.querySelector('.number-list');
+                if (!container || !grid) return;
+
+                const cols = 10, rows = 9, pad = 20;
+                const w = container.clientWidth  - pad;
+                const h = container.clientHeight - pad;
+
+                // Ukuran lingkaran berdasarkan lebar
+                const colGap = 2;
+                const size = Math.floor((w - colGap * (cols - 1)) / cols);
+                const fs   = Math.max(11, Math.floor(size * 0.4));
+
+                // Gap vertikal: sisa dibagi di antara baris
+                const totalCircleH = size * rows;
+                const extraH = h - totalCircleH;
+                const rowGap = Math.min(12, Math.max(colGap, Math.floor(extraH / (rows - 1))));
+
+                grid.style.gridTemplateColumns = `repeat(${cols}, ${size}px)`;
+                grid.style.gridTemplateRows    = `repeat(${rows}, ${size}px)`;
+                grid.style.columnGap      = colGap + 'px';
+                grid.style.rowGap         = rowGap + 'px';
+                grid.style.width          = '100%';
+                grid.style.height         = '100%';
+                grid.style.alignContent   = 'space-between';
+                grid.style.justifyContent = 'space-between';
+
+                document.querySelectorAll('.number').forEach(n => {
+                    n.style.width    = size + 'px';
+                    n.style.height   = size + 'px';
+                    n.style.fontSize = fs + 'px';
+                });
+            }
+
+            // Jalankan setelah render dan saat resize
+            requestAnimationFrame(sizeNumberGrid);
+            window.addEventListener('resize', sizeNumberGrid);
+        });
+
+        $(document).ready(function() {
+            if ($('#bennerkonsumen').length) {
+                $('#bennerkonsumen').slick({
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    autoplay: true,
+                    autoplaySpeed: 2000,
+                    dots: true
+                });
+            }
+        });
+
+        var selectedAturan = '';
+        var selectedColor = '';
+        var selectedColorKey = '';
+        var defaultStyles = {};
+        var selectedNumbersByColor = new Map();
+
+        function aturanmain(aturan, element) {
+            selectedAturan = aturan;
+
+            // Update UI selection
+            if(element) {
+                document.querySelectorAll('.pilihAturan').forEach(el => el.classList.remove('active-aturan'));
+                element.classList.add('active-aturan');
+            }
+
+            const resultAturan = document.getElementById('resultAturan');
+
+            // Data teks untuk setiap aturan
+            const data = {
+                aturan1: { label:'A', icon:'🎯', title:'1 BARIS (5 ANGKA)',      baris:1,  angka:5,  desc:'Pilih <b>1 baris</b> berisi <b>5 angka</b>. Semua angka dalam satu baris harus keluar untuk menang.' },
+                aturan2: { label:'B', icon:'🎲', title:'2 BARIS (10 ANGKA)',     baris:2,  angka:10, desc:'Pilih <b>2 baris bebas</b>, masing-masing berisi <b>5 angka</b>. Total 10 angka.' },
+                aturan3: { label:'C', icon:'📊', title:'2 BARIS 1 KOLOM (10)',   baris:2,  angka:10, desc:'Pilih <b>2 baris</b> dalam <b>1 kolom yang sama</b>. Total 10 angka berurutan dalam kolom.' },
+                aturan4: { label:'D', icon:'🔥', title:'3 BARIS (15 ANGKA)',     baris:3,  angka:15, desc:'Pilih <b>3 baris bebas</b>, masing-masing berisi <b>5 angka</b>. Total 15 angka.' },
+                aturan5: { label:'E', icon:'⭐', title:'1 KOLOM + 1 BARIS (15)', baris:'-', angka:15, desc:'Pilih <b>1 kolom penuh</b> + <b>1 baris</b>. Kombinasi vertikal dan horizontal.' },
+                aturan6: { label:'F', icon:'💎', title:'4 BARIS (20 ANGKA)',     baris:4,  angka:20, desc:'Pilih <b>4 baris bebas</b>, masing-masing berisi <b>5 angka</b>. Total 20 angka.' },
+                aturan7: { label:'G', icon:'🏆', title:'2 KOLOM (20 ANGKA)',     baris:'-', angka:20, desc:'Pilih <b>2 kolom penuh</b>. Setiap kolom berisi 10 angka berurutan. Total 20 angka.' },
+                aturan8: { label:'H', icon:'👑', title:'3 KOLOM FULL (30 ANGKA)',baris:'-', angka:30, desc:'Pilih <b>3 kolom penuh</b>. Setiap kolom berisi 10 angka berurutan. Total 30 angka.' },
+                aturan9: { label:'I', icon:'🌟', title:'5 BARIS (25 ANGKA)',     baris:5,  angka:25, desc:'Pilih <b>5 baris bebas</b>, masing-masing berisi <b>5 angka</b>. Total 25 angka.' },
+            };
+
+            const d = data[aturan];
+            if (!d) return;
+
+            resultAturan.innerHTML = d.title;
+
+            document.getElementById('aturan-icon').textContent = d.icon;
+            document.getElementById('aturan-title-display').textContent = d.title;
+
+            const statBox = (label, val) => `
+                <div style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,200,100,0.2); border-radius:12px; padding:12px 20px; text-align:center; min-width:80px;">
+                    <div style="font-size:26px; font-weight:900; color:#ffd700;">${val}</div>
+                    <div style="font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:1px;">${label}</div>
+                </div>`;
+            document.getElementById('aturan-stats').innerHTML =
+                statBox('ANGKA', d.angka) +
+                (d.baris !== '-' ? statBox('BARIS', d.baris) : '');
+
+            document.getElementById('aturan-desc').innerHTML = d.desc;
+
+            openModalAturan();
+        }
+
+
+        function updateDateTime() {
+            var currentDate = new Date();
+            var day1 = currentDate.toLocaleString('default', {
+                weekday: 'long'
+            });
+            var day = currentDate.getDate();
+            var month = currentDate.toLocaleString('default', {
+                month: 'long'
+            });
+            var year = currentDate.getFullYear();
+            var hours = currentDate.getHours();
+            var minutes = currentDate.getMinutes();
+            var seconds = currentDate.getSeconds();
+
+            var formattedDate = `${day1}, ${day < 10 ? '0' + day : day} ${month} ${year}`;
+            var formattedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+
+            document.getElementById('datetime-container1').innerHTML =
+                '<i class="far fa-clock"></i> ' + formattedTime + ' WIB' +
+                ' <i class="far fa-calendar"></i> ' + formattedDate;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        function showNumber(number) {
+            const resultDiv = document.getElementById('resultAngkaTerakhir');
+            const colorDiv = document.getElementById('resultColorTerakhir');
+            const pesanAlert = document.querySelector('.pesanAlert');
+
+            if (!selectedColor || !selectedAturan) {
+                pesanAlert.innerHTML = '<span style="color: red; display: block; text-align: center;">⚠ Pilih warna kupon dan aturan main terlebih dahulu!</span>';
+                return;
+            }
+
+            pesanAlert.innerHTML = '';
+            resultDiv.innerHTML = number;
+        }
+
+        function setColor(colorKey, element) {
+            // Update UI selection
+            if(element) {
+                document.querySelectorAll('.color').forEach(el => el.classList.remove('active-color'));
+                element.classList.add('active-color');
+            }
+
+            const colorMap = {
+                red: ['KUPON PINK', '#F7418F'],
+                blue: ['KUPON BIRU', '#96C9F4'],
+                green: ['KUPON HIJAU', 'green'],
+                yellow: ['KUPON KUNING', 'yellow'],
+                white: ['KUPON PUTIH', 'white']
+            };
+
+            // Simpan angka yang telah dipilih untuk warna sebelumnya
+            if (selectedColorKey) {
+                const picked = [];
+                for (let i = 1; i <= 90; i++) {
+                    const el = document.getElementById(`picked-${i}`);
+                    if (el && el.classList.contains('filled') && el.classList.contains(selectedColorKey)) {
+                        picked.push(i);
+                    }
+                }
+                selectedNumbersByColor.set(selectedColorKey, picked);
+            }
+
+            // Clear angka yang sedang tampil
+            clearGrid();
+
+            // Ganti warna baru
+            selectedColor = colorMap[colorKey][1];
+            selectedColorKey = colorKey;
+            const label = colorMap[colorKey][0];
+
+            // Hanya tampilkan label kupon di kanan (grid area), tidak di kotak kiri
+            document.getElementById('resultColorTerakhir').innerHTML = label;
+            document.getElementById('resultColorTerakhir').style.color = selectedColor;
+            // Tetap hidden di kiri
+            document.getElementById('resultColor').innerHTML = label;
+            document.getElementById('resultColor').style.color = selectedColor;
+
+            // Restore angka sebelumnya jika ada
+            const restored = selectedNumbersByColor.get(colorKey) || [];
+            restored.forEach(num => {
+                const el = document.getElementById(`picked-${num}`);
+                if (el) {
+                    el.className = `picked-number filled ${colorKey}`;
+                    el.innerText = num;
+                }
+
+                const btn = document.getElementById(`number${num}`);
+                if (btn) {
+                    btn.style.background = selectedColor;
+                    btn.style.borderColor = selectedColor;
+                    btn.classList.add('active-number-btn');
+                }
+            });
+        }
+
+        function clearGrid() {
+            for (let i = 1; i <= 90; i++) {
+                const el = document.getElementById(`picked-${i}`);
+                if (el) {
+                    el.className = 'picked-number';
+                    el.innerText = '';
+                }
+
+                const btn = document.getElementById(`number${i}`);
+                if (btn) {
+                    btn.style.background = '';
+                    btn.style.borderColor = '';
+                    btn.classList.remove('active-number-btn');
+                }
+            }
+        }
+
+        function toggleColor(number) {
+            var numberDiv = document.getElementById('number' + number);
+            var overlay = document.getElementById('overlay');
+            var resultDiv = document.getElementById('resultAngkaTerakhir');
+            var pesanAlert = document.querySelector('.pesanAlert');
+
+            // Validasi warna & aturan main
+            if (!selectedColor || !selectedAturan) {
+                pesanAlert.innerHTML = '<span style="color: red; display: block; text-align: center;">⚠ Pilih warna kupon dan aturan main terlebih dahulu!</span>';
+                return;
+            } else {
+                pesanAlert.innerHTML = ''; // hapus pesan jika sudah valid
+            }
+
+            // Simpan style default (jika belum tersimpan)
+            if (!defaultStyles[number]) {
+                defaultStyles[number] = {
+                    transform: window.getComputedStyle(numberDiv).transform,
+                };
+            }
+
+            var isColorChanged = !numberDiv.classList.contains('active-number-btn');
+
+            if (isColorChanged) {
+                numberDiv.style.background = selectedColor;
+                numberDiv.style.borderColor = selectedColor;
+                numberDiv.classList.add('active-number-btn');
+
+                // Tampilkan overlay animasi fullscreen
+                const existingOverlay = document.getElementById('numberShowOverlay');
+                if (existingOverlay) existingOverlay.remove();
+
+                const colorLabelMap = { '#F7418F': 'KUPON PINK', '#96C9F4': 'KUPON BIRU', 'green': 'KUPON HIJAU', 'yellow': 'KUPON KUNING', 'white': 'KUPON PUTIH' };
+                const colorLabel = colorLabelMap[selectedColor] || '';
+                const badgeBg = selectedColor === 'yellow' || selectedColor === 'white' ? '#333' : selectedColor;
+                const badgeTextColor = selectedColor === 'yellow' || selectedColor === 'white' ? selectedColor : '#fff';
+
+                const showOverlay = document.createElement('div');
+                showOverlay.id = 'numberShowOverlay';
+                showOverlay.className = 'number-show-overlay';
+                showOverlay.innerHTML = `
+                    <div class="number-show-rings"></div>
+                    <div class="number-show-rings"></div>
+                    <div class="number-show-rings"></div>
+                    <div class="number-show-label">✦ ANGKA KELUAR ✦</div>
+                    <div class="number-show-badge" style="background:${badgeBg}; color:${badgeTextColor};">${colorLabel}</div>
+                    <div class="number-show-number" style="color:${selectedColor === 'white' ? '#ffffff' : (selectedColor === 'yellow' ? '#ffd700' : selectedColor)};">${number}</div>
+                `;
+                document.body.appendChild(showOverlay);
+
+                setTimeout(() => {
+                    showOverlay.classList.add('fade-out');
+                    setTimeout(() => showOverlay.remove(), 400);
+                }, 3000);
+
+                const target = document.getElementById(`picked-${number}`);
+                if (target) {
+                    target.className = `picked-number filled ${selectedColorKey}`;
+                    target.innerText = number;
+                }
+                
+                if (resultDiv) {
+                    resultDiv.innerHTML = number;
+                    const c = selectedColor === 'white' ? '#fff' : (selectedColor === 'yellow' ? '#ffd700' : selectedColor);
+                    resultDiv.style.color = c;
+                    resultDiv.style.textShadow = `0 0 20px ${c}, 0 2px 4px rgba(0,0,0,0.8)`;
+                }
+            } else {
+                numberDiv.style.background = '';
+                numberDiv.style.transform = defaultStyles[number].transform;
+                numberDiv.style.borderColor = '';
+                numberDiv.classList.remove('active-number-btn');
+
+                const target = document.getElementById(`picked-${number}`);
+                if (target) {
+                    target.className = 'picked-number';
+                    target.innerText = '';
+                }
+                if(resultDiv) resultDiv.innerHTML = '';
+            }
+        }
+
+        function clearColors() {
+            var colorDiv = document.getElementById('resultColor');
+            var resultDiv = document.getElementById('resultAngkaTerakhir');
+            var numberDivs = document.querySelectorAll('.number');
+            var angkaTerpilih = document.getElementById('angkaTerpilih');
+            numberDivs.forEach(div => {
+                div.style.backgroundColor = '';
+                div.style.borderColor = '';
+            });
+            colorDiv.innerHTML = '';
+            resultDiv.innerHTML = '';
+            if (angkaTerpilih) angkaTerpilih.innerHTML = '';
+        }
+
+        function openModal() {
+            document.getElementById('myModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+        
+        function openModalAturan() {
+            document.getElementById('myModalAturan').style.display = 'flex';
+        }
+
+        function closeModalAturan() {
+            document.getElementById('myModalAturan').style.display = 'none';
+        }
+
+        // --- Logic Edit Informasi ---
+        const DEFAULT_INFO = {
+            namaManagement: 'Nama Management',
+            namaPartner: 'Nama Partner',
+            telp: 'Telp Management',
+            alamat: 'Alamat Management',
+            pesan: 'Pesan Default Management'
+        };
+
+        function loadInfo() {
+            const saved = JSON.parse(localStorage.getItem('kim_info')) || DEFAULT_INFO;
+            
+            const elMgmt = document.getElementById('info-nama-management');
+            const elPart = document.getElementById('info-nama-partner');
+            const elTelp = document.getElementById('info-telp');
+            const elAlamat = document.getElementById('info-alamat');
+            const elPesan = document.getElementById('info-pesan');
+            const elMarquee = document.getElementById('info-marquee');
+
+            if(elMgmt) elMgmt.innerText = saved.namaManagement || DEFAULT_INFO.namaManagement;
+            if(elPart) elPart.innerText = saved.namaPartner || DEFAULT_INFO.namaPartner;
+            if(elTelp) elTelp.innerText = saved.telp || DEFAULT_INFO.telp;
+            if(elAlamat) elAlamat.innerText = saved.alamat || DEFAULT_INFO.alamat;
+            if(elPesan) elPesan.innerText = saved.pesan || DEFAULT_INFO.pesan;
+            if(elMarquee) elMarquee.innerText = saved.pesan || DEFAULT_INFO.pesan;
+        }
+
+        function openModalEditInfo() {
+            closeModal(); 
+            const saved = JSON.parse(localStorage.getItem('kim_info')) || DEFAULT_INFO;
+            
+            document.getElementById('input-nama-management').value = saved.namaManagement || '';
+            document.getElementById('input-nama-partner').value = saved.namaPartner || '';
+            document.getElementById('input-telp').value = saved.telp || '';
+            document.getElementById('input-alamat').value = saved.alamat || '';
+            document.getElementById('input-pesan').value = saved.pesan || '';
+
+            document.getElementById('myModalEditInfo').style.display = 'flex';
+        }
+
+        function closeModalEditInfo() {
+            document.getElementById('myModalEditInfo').style.display = 'none';
+            openModal();
+        }
+
+        function saveInfo() {
+            const newData = {
+                namaManagement: document.getElementById('input-nama-management').value,
+                namaPartner: document.getElementById('input-nama-partner').value,
+                telp: document.getElementById('input-telp').value,
+                alamat: document.getElementById('input-alamat').value,
+                pesan: document.getElementById('input-pesan').value,
+            };
+
+            localStorage.setItem('kim_info', JSON.stringify(newData));
+            loadInfo();
+            closeModalEditInfo();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadInfo);
+    </script>
+</body>
+</html>
+

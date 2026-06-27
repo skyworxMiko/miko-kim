@@ -306,9 +306,9 @@
         }
 
         .angka-grid .picked-number {
-            width: min(6vw, 7.5vh, 85px);
-            height: min(6vw, 7.5vh, 85px);
-            font-size: min(4.2vw, 5vh, 52px);
+            width: var(--circle-size, min(6vw, 7.5vh, 85px));
+            height: var(--circle-size, min(6vw, 7.5vh, 85px));
+            font-size: var(--font-size, min(4.2vw, 5vh, 52px));
             letter-spacing: -1.5px;
             line-height: 1;
             font-weight: 900;
@@ -323,7 +323,7 @@
         }
 
         .angka-grid .picked-number.single-digit {
-            font-size: min(5.5vw, 6vh, 70px);
+            font-size: var(--font-size-single, min(5.5vw, 6vh, 70px));
             letter-spacing: normal;
         }
 
@@ -1071,8 +1071,11 @@
                     <!-- KANAN: Tampilan Angka Terpilih & Marquee -->
                     <div class="col-lg-8 col-md-8 col-sm-12 judulPermainan">
                         <!-- Aturan Aktif & Warna -->
-                        <div class="resultColor" id="resultColor" style="flex-shrink: 0;"></div>
-                        <div class="resultAturan" id="resultAturan" style="flex-shrink: 0;"></div>
+                        <div class="d-flex justify-content-center align-items-center gap-4 w-100 mb-2" style="flex-shrink: 0;">
+                            <div class="resultColor mb-0" id="resultColor" style="font-size: 35px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
+                            <div class="text-white fw-bold mb-0" style="font-size: 30px;">-</div>
+                            <div class="resultAturan mb-0" id="resultAturan" style="font-size: 28px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
+                        </div>
 
                         <!-- Grid Angka Terpilih -->
                         <div class="angka-grid-wrapper">
@@ -1284,41 +1287,74 @@
 
             // Hitung ukuran lingkaran agar selalu bulat sempurna & mengisi penuh kotak
             function sizeNumberGrid() {
-                const container = document.querySelector('.angkaDitekan');
-                const grid = document.querySelector('.number-list');
-                if (!container || !grid) return;
+                // PANEL KIRI
+                const containerL = document.querySelector('.angkaDitekan');
+                const gridL = document.querySelector('.number-list');
+                if (containerL && gridL) {
+                    const cols = 9, rows = 10, pad = 30;
+                    const w = containerL.clientWidth - pad;
+                    const h = containerL.clientHeight - pad;
+                    
+                    const colGap = 6;
+                    const sizeW = Math.floor((w - colGap * (cols - 1)) / cols);
+                    const sizeH = Math.floor((h - colGap * (rows - 1)) / rows);
+                    const size = Math.min(sizeW, sizeH);
+                    const fs = Math.max(11, Math.floor(size * 0.45));
 
-                const cols = 9, rows = 10, pad = 30; // padding diperbesar
-                const w = container.clientWidth - pad;
-                const h = container.clientHeight - pad;
+                    const extraW = w - (size * cols);
+                    const actualColGap = Math.max(colGap, Math.floor(extraW / (cols - 1)));
+                    const extraH = h - (size * rows);
+                    const actualRowGap = Math.max(colGap, Math.floor(extraH / (rows - 1)));
 
-                // Ukuran lingkaran maksimal berdasarkan lebar dan tinggi
-                const colGap = 6; // gap diperbesar
-                const sizeW = Math.floor((w - colGap * (cols - 1)) / cols);
-                const sizeH = Math.floor((h - colGap * (rows - 1)) / rows);
-                const size = Math.min(sizeW, sizeH); // ambil yang paling kecil agar tidak terpotong
-                const fs = Math.max(11, Math.floor(size * 0.45));
+                    gridL.style.gridTemplateColumns = `repeat(${cols}, ${size}px)`;
+                    gridL.style.gridTemplateRows = `repeat(${rows}, ${size}px)`;
+                    gridL.style.columnGap = actualColGap + 'px';
+                    gridL.style.rowGap = actualRowGap + 'px';
+                    gridL.style.width = '100%';
+                    gridL.style.height = '100%';
+                    gridL.style.alignContent = 'space-between';
+                    gridL.style.justifyContent = 'space-between';
 
-                // Hitung ulang gap aktual berdasarkan sisa ruang agar rata tengah/menyebar
-                const extraW = w - (size * cols);
-                const actualColGap = Math.floor(extraW / (cols - 1));
-                const extraH = h - (size * rows);
-                const actualRowGap = Math.floor(extraH / (rows - 1));
+                    document.querySelectorAll('.number').forEach(n => {
+                        n.style.width = size + 'px';
+                        n.style.height = size + 'px';
+                        n.style.fontSize = fs + 'px';
+                    });
+                }
 
-                grid.style.gridTemplateColumns = `repeat(${cols}, ${size}px)`;
-                grid.style.gridTemplateRows = `repeat(${rows}, ${size}px)`;
-                grid.style.columnGap = actualColGap + 'px';
-                grid.style.rowGap = actualRowGap + 'px';
-                grid.style.width = '100%';
-                grid.style.height = '100%';
-                grid.style.alignContent = 'space-between';
-                grid.style.justifyContent = 'space-between';
+                // PANEL KANAN
+                const containerR = document.querySelector('.angka-grid-wrapper');
+                const gridR = document.querySelector('.angka-grid');
+                if (containerR && gridR) {
+                    const cols = 9, rows = 10, pad = 10; 
+                    const w = containerR.clientWidth - pad;
+                    const h = containerR.clientHeight - pad;
+                    
+                    const colGap = 4;
+                    const sizeW = Math.floor((w - colGap * (cols - 1)) / cols);
+                    const sizeH = Math.floor((h - colGap * (rows - 1)) / rows);
+                    const size = Math.min(sizeW, sizeH, 85); 
+                    
+                    const fs = Math.floor(size * 0.55); 
+                    const fsSingle = Math.floor(size * 0.75);
 
-                document.querySelectorAll('.number').forEach(n => {
-                    n.style.width = size + 'px';
-                    n.style.height = size + 'px';
-                    n.style.fontSize = fs + 'px';
-                });
+                    const extraW = w - (size * cols);
+                    const actualColGap = Math.max(colGap, Math.floor(extraW / (cols - 1)));
+                    const extraH = h - (size * rows);
+                    const actualRowGap = Math.max(colGap, Math.floor(extraH / (rows - 1)));
+
+                    gridR.style.gridTemplateColumns = `repeat(${cols}, ${size}px)`;
+                    gridR.style.gridTemplateRows = `repeat(${rows}, ${size}px)`;
+                    gridR.style.columnGap = actualColGap + 'px';
+                    gridR.style.rowGap = actualRowGap + 'px';
+                    gridR.style.alignContent = 'center';
+                    gridR.style.justifyContent = 'center';
+
+                    // Set CSS Variables untuk ukuran dinamis
+                    gridR.style.setProperty('--circle-size', size + 'px');
+                    gridR.style.setProperty('--font-size', fs + 'px');
+                    gridR.style.setProperty('--font-size-single', fsSingle + 'px');
+                }
             }
 
             // Jalankan setelah render dan saat resize

@@ -1081,6 +1081,40 @@
                 padding: 12px 10px !important;
             }
         }
+
+        /* Mode Proyektor */
+        .projector-mode .left-panel {
+            display: none !important;
+        }
+        .projector-mode .judulPermainan {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+        .btn-exit-projector {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255,255,255,0.7);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s;
+        }
+        .btn-exit-projector:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .projector-mode .btn-exit-projector {
+            display: block;
+        }
     </style>
 </head>
 
@@ -1147,9 +1181,11 @@
                         <!-- Tombol Aksi -->
                         <div style="flex-shrink:0;">
                             <div class="d-flex justify-content-between gap-2">
+                                <a href="#" onclick="toggleProjectorMode()" class="btn btn-info fw-bold"
+                                    style="border-radius:10px; padding:10px 15px;" title="Mode Layar Penuh (Sembunyikan Panel)"><i class="fas fa-desktop"></i></a>
                                 <a href="#" onclick="openModal()" class="btn btn-success fw-bold flex-fill"
                                     style="border-radius:10px; letter-spacing:1px;">Istirahat</a>
-                                <a href="#" onclick="location.reload()" class="btn btn-warning fw-bold flex-fill"
+                                <a href="#" onclick="resetGameState()" class="btn btn-warning fw-bold flex-fill"
                                     style="border-radius:10px; letter-spacing:1px;">Keluar</a>
                             </div>
                         </div>
@@ -1164,6 +1200,11 @@
                             <div class="text-white fw-bold mb-0" style="font-size: 30px;">-</div>
                             <div class="resultAturan mb-0" id="resultAturan"
                                 style="font-size: 28px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
+                        </div>
+
+                        <!-- Tombol Keluar Proyektor (Hanya Muncul di Mode Proyektor) -->
+                        <div class="btn-exit-projector" onclick="toggleProjectorMode()" title="Tampilkan Panel Kontrol">
+                            <i class="fas fa-columns"></i> Tampilkan Kontrol
                         </div>
 
                         <!-- Grid Angka Terpilih -->
@@ -1314,6 +1355,22 @@
                         <div class="d-flex w-100 gap-2 mt-4">
                             <button class="btn-edit-cancel flex-fill" onclick="closeModalEditInfo()">Batal</button>
                             <button class="btn-edit-save flex-fill" onclick="saveInfo()">Simpan</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Konfirmasi Reset -->
+                <div id="myModalReset" class="modal"
+                    style="z-index: 1060; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);">
+                    <div class="edit-modal-content" style="max-width: 400px; text-align: center; padding: 30px 20px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 55px; color: #ff4b2b; margin-bottom: 20px;"></i>
+                        <h3 class="edit-modal-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 15px; color: #fff;">Peringatan!</h3>
+                        <p style="color: rgba(255,255,255,0.7); font-size: 15px; margin-bottom: 30px; line-height: 1.6;">
+                            Apakah Anda yakin ingin menghapus semua data permainan dan mengulang dari awal? Data yang sudah tersimpan akan hilang.
+                        </p>
+                        <div class="d-flex w-100 gap-2">
+                            <button class="btn-edit-cancel flex-fill" onclick="closeModalReset()">Batal</button>
+                            <button class="btn-edit-save flex-fill" style="background: linear-gradient(45deg, #ff416c, #ff4b2b); box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);" onclick="confirmResetGameState()">Ya, Hapus</button>
                         </div>
                     </div>
                 </div>
@@ -1803,6 +1860,231 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadInfo);
+    </script>
+    <!-- Sinkronisasi Tab State (LocalStorage) -->
+    <script>
+        // 1. Monkey patch fungsi perubah state
+        const originalSetColor = setColor;
+        setColor = function(colorKey, element, skipSave) {
+            originalSetColor(colorKey, element);
+            if (!skipSave) saveGameState();
+        };
+
+        const originalAturanmain = aturanmain;
+        aturanmain = function(aturan, element, skipSave) {
+            originalAturanmain(aturan, element);
+            if (!skipSave) saveGameState();
+        };
+
+        const originalToggleColor = toggleColor;
+        toggleColor = function(number, skipSave) {
+            originalToggleColor(number);
+            if (!skipSave) {
+                const el = document.getElementById('number' + number);
+                if (el && el.classList.contains('active-number-btn')) {
+                    // Angka BARU dipilih, kirim event animasi
+                    saveGameState({ action: 'add', number: number, color: selectedColor, timestamp: Date.now() });
+                } else {
+                    // Angka dibatalkan
+                    saveGameState();
+                }
+            }
+        };
+
+        const originalOpenModal = openModal;
+        openModal = function(skipSave) {
+            originalOpenModal();
+            if (!skipSave) saveGameState();
+        }
+
+        const originalCloseModal = closeModal;
+        closeModal = function(skipSave) {
+            originalCloseModal();
+            if (!skipSave) saveGameState();
+        }
+
+        const originalOpenModalAturan = openModalAturan;
+        openModalAturan = function(skipSave) {
+            originalOpenModalAturan();
+            if (!skipSave) saveGameState();
+        }
+
+        const originalCloseModalAturan = closeModalAturan;
+        closeModalAturan = function(skipSave) {
+            originalCloseModalAturan();
+            if (!skipSave) saveGameState();
+        }
+
+        function getActiveModal() {
+            if (document.getElementById('myModal') && document.getElementById('myModal').style.display === 'flex') return 'myModal';
+            if (document.getElementById('myModalAturan') && document.getElementById('myModalAturan').style.display === 'flex') return 'myModalAturan';
+            return null;
+        }
+
+        // 2. Fungsi Reset
+        function resetGameState() {
+            document.getElementById('myModalReset').style.display = 'flex';
+        }
+
+        function closeModalReset() {
+            document.getElementById('myModalReset').style.display = 'none';
+        }
+
+        function confirmResetGameState() {
+            localStorage.removeItem('kim_gameState');
+            location.reload();
+        }
+
+        // Mode Proyektor
+        function toggleProjectorMode() {
+            document.body.classList.toggle('projector-mode');
+            // Recalculate grid sizing after 100ms so transition can finish
+            setTimeout(() => {
+                if(typeof sizeNumberGrid === 'function') {
+                    sizeNumberGrid();
+                }
+            }, 50);
+        }
+
+        // 3. Save State ke LocalStorage
+        function saveGameState(animationEvent = null) {
+            // Force update map dari DOM khusus warna yang sedang aktif sebelum disave
+            if (selectedColorKey) {
+                const picked = [];
+                for (let i = 1; i <= 90; i++) {
+                    const el = document.getElementById(`picked-${i}`);
+                    if (el && el.classList.contains('filled') && el.classList.contains(selectedColorKey)) {
+                        picked.push(i);
+                    }
+                }
+                selectedNumbersByColor.set(selectedColorKey, picked);
+            }
+
+            const resultDiv = document.getElementById('resultAngkaTerakhir');
+            const state = {
+                aturan: selectedAturan,
+                colorKey: selectedColorKey,
+                numbersMap: Array.from(selectedNumbersByColor.entries()),
+                lastNumber: resultDiv ? resultDiv.innerText : '',
+                animationEvent: animationEvent,
+                activeModal: getActiveModal()
+            };
+            localStorage.setItem('kim_gameState', JSON.stringify(state));
+        }
+
+        // 4. Load State dari LocalStorage
+        function loadGameState(state, isInitialLoad = false) {
+            if (!state) return;
+            
+            // a. Restore Map Data terlebih dahulu
+            if (state.numbersMap) {
+                selectedNumbersByColor = new Map(state.numbersMap);
+            }
+
+            // b. Override Aturan (jika berbeda)
+            if (state.aturan && state.aturan !== selectedAturan) {
+                const el = document.querySelector(`.pilihAturan[onclick*="'${state.aturan}'"]`);
+                aturanmain(state.aturan, el, true); // true = skipSave
+            }
+
+            // c. Override Warna & Render Ulang Papan
+            if (state.colorKey) {
+                const el = document.querySelector(`.color[onclick*="'${state.colorKey}'"]`);
+                // KOSONGKAN selectedColorKey agar setColor tidak me-replace data Map kita yang baru ditarik dengan DOM lama!
+                selectedColorKey = ''; 
+                setColor(state.colorKey, el, true); // true = skipSave
+            }
+
+            // d. Restore Angka Terakhir secara manual (karena animasi tidak di-trigger ulang)
+            if (state.lastNumber) {
+                const resultDiv = document.getElementById('resultAngkaTerakhir');
+                if (resultDiv) {
+                    resultDiv.innerHTML = state.lastNumber;
+                    const cMap = {
+                        red: '#F7418F', blue: '#96C9F4', green: 'green', yellow: 'yellow', white: 'white'
+                    };
+                    const selColor = cMap[state.colorKey];
+                    if (selColor) {
+                        const c = selColor === 'white' ? '#fff' : (selColor === 'yellow' ? '#ffd700' : selColor);
+                        resultDiv.style.color = c;
+                        resultDiv.style.textShadow = `0 0 20px ${c}, 0 2px 4px rgba(0,0,0,0.8)`;
+                    }
+                }
+            }
+
+            // e. Restore Active Modal
+            if (state.activeModal === 'myModal') {
+                openModal(true);
+            } else if (state.activeModal === 'myModalAturan') {
+                openModalAturan(true);
+            } else {
+                closeModal(true);
+                closeModalAturan(true);
+            }
+
+            // f. Trigger Animasi jika ada (Hanya jika BUKAN load pertama)
+            if (state.animationEvent && state.animationEvent.timestamp && !isInitialLoad) {
+                if (!window.lastAnimationTimestamp || window.lastAnimationTimestamp < state.animationEvent.timestamp) {
+                    window.lastAnimationTimestamp = state.animationEvent.timestamp;
+                    triggerNumberAnimation(state.animationEvent.number, state.animationEvent.color);
+                }
+            }
+        }
+
+        // Fungsi Animasi Mandiri (Khusus dimainkan oleh Tab pasif yang tersinkronisasi)
+        function triggerNumberAnimation(number, selectedColor) {
+            const existingOverlay = document.getElementById('numberShowOverlay');
+            if (existingOverlay) existingOverlay.remove();
+
+            const colorLabelMap = { '#F7418F': 'KUPON PINK', '#96C9F4': 'KUPON BIRU', 'green': 'KUPON HIJAU', 'yellow': 'KUPON KUNING', 'white': 'KUPON PUTIH' };
+            const colorLabel = colorLabelMap[selectedColor] || '';
+            const badgeBg = selectedColor === 'yellow' || selectedColor === 'white' ? '#333' : selectedColor;
+            const badgeTextColor = selectedColor === 'yellow' || selectedColor === 'white' ? selectedColor : '#fff';
+
+            const showOverlay = document.createElement('div');
+            showOverlay.id = 'numberShowOverlay';
+            showOverlay.className = 'number-show-overlay';
+            showOverlay.innerHTML = `
+                <div class="number-show-rings"></div>
+                <div class="number-show-rings"></div>
+                <div class="number-show-rings"></div>
+                <div class="number-show-label">✦ ANGKA KELUAR ✦</div>
+                <div class="number-show-badge" style="background:${badgeBg}; color:${badgeTextColor};">${colorLabel}</div>
+                <div class="number-show-number" style="color:${selectedColor === 'white' ? '#ffffff' : (selectedColor === 'yellow' ? '#ffd700' : selectedColor)};">${number}</div>
+            `;
+            document.body.appendChild(showOverlay);
+
+            setTimeout(() => {
+                showOverlay.classList.add('fade-out');
+                setTimeout(() => showOverlay.remove(), 400);
+            }, 3000);
+        }
+
+        // 5. Listener sinkronisasi antar Tab (Otomatis jalan saat tab lain men-save)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'kim_gameState' && e.newValue) {
+                loadGameState(JSON.parse(e.newValue));
+            } else if (e.key === 'kim_gameState' && !e.newValue) {
+                // Jika tab lain menekan reset/keluar
+                location.reload();
+            }
+        });
+
+        // 6. Init Load (Panggil saat pertama buka halaman)
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedState = localStorage.getItem('kim_gameState');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                // Tandai animasi terakhir agar tidak terputar saat direfresh
+                if (state.animationEvent) {
+                    window.lastAnimationTimestamp = state.animationEvent.timestamp;
+                }
+                // Beri jeda kecil agar DOM & Grid Utama selesai digambar 100% sebelum direstore
+                setTimeout(() => {
+                    loadGameState(state, true); // true = isInitialLoad
+                }, 150);
+            }
+        });
     </script>
 </body>
 

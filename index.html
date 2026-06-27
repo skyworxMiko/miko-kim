@@ -1005,15 +1005,18 @@
                 overflow-x: hidden !important;
                 overflow-y: auto !important;
             }
-            .left-panel, .judulPermainan {
+
+            .left-panel,
+            .judulPermainan {
                 height: auto;
                 min-height: 100vh;
                 overflow: visible;
             }
+
             .angkaDitekan {
                 min-height: 380px;
             }
-            
+
             .promo-title {
                 font-size: 34px;
                 letter-spacing: 1px;
@@ -1086,11 +1089,13 @@
         .projector-mode .left-panel {
             display: none !important;
         }
+
         .projector-mode .judulPermainan {
             flex: 0 0 100% !important;
             max-width: 100% !important;
             width: 100% !important;
         }
+
         .btn-exit-projector {
             display: none;
             position: absolute;
@@ -1099,7 +1104,7 @@
             z-index: 1000;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             padding: 8px 15px;
             border-radius: 8px;
             cursor: pointer;
@@ -1108,10 +1113,12 @@
             backdrop-filter: blur(4px);
             transition: all 0.3s;
         }
+
         .btn-exit-projector:hover {
             background: rgba(255, 255, 255, 0.2);
             color: white;
         }
+
         .projector-mode .btn-exit-projector {
             display: block;
         }
@@ -1182,11 +1189,16 @@
                         <div style="flex-shrink:0;">
                             <div class="d-flex justify-content-between gap-2">
                                 <a href="#" onclick="toggleProjectorMode()" class="btn btn-info fw-bold"
-                                    style="border-radius:10px; padding:10px 15px;" title="Mode Layar Penuh (Sembunyikan Panel)"><i class="fas fa-desktop"></i></a>
-                                <a href="#" onclick="openModal()" class="btn btn-success fw-bold flex-fill d-flex align-items-center justify-content-center gap-2"
-                                    style="border-radius:10px; letter-spacing:1px;"><i class="fas fa-coffee"></i> Istirahat</a>
-                                <a href="#" onclick="resetGameState()" class="btn btn-warning fw-bold flex-fill d-flex align-items-center justify-content-center gap-2"
-                                    style="border-radius:10px; letter-spacing:1px;"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+                                    style="border-radius:10px; padding:10px 15px;"
+                                    title="Mode Layar Penuh (Sembunyikan Panel)"><i class="fas fa-desktop"></i></a>
+                                <a href="#" onclick="openModal()"
+                                    class="btn btn-success fw-bold flex-fill d-flex align-items-center justify-content-center gap-2"
+                                    style="border-radius:10px; letter-spacing:1px;"><i class="fas fa-coffee"></i>
+                                    Istirahat</a>
+                                <a href="#" onclick="resetGameState()"
+                                    class="btn btn-warning fw-bold flex-fill d-flex align-items-center justify-content-center gap-2"
+                                    style="border-radius:10px; letter-spacing:1px;"><i class="fas fa-sign-out-alt"></i>
+                                    Keluar</a>
                             </div>
                         </div>
                     </div>
@@ -1299,10 +1311,14 @@
                             <div class="promo-tagline">
                                 <span class="highlight-text">Dendang Pantun & Lagu Berhadiah</span>
                                 <p>Lengkapi Acara Anda Bersama Kami...!!!</p>
-                                <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);">
-                                    <span style="display: block; font-size: 13px; color: #f5a623; font-weight: bold; margin-bottom: 5px;">Tertarik Menggunakan Aplikasi KIM Ini?</span>
-                                    <span style="font-size: 13px; color: #fff;">Hubungi DCODE TECH INDONESIA (Miko): 
-                                        <a href="https://wa.me/6282287483950" target="_blank" style="color: #4CAF50; font-weight: bold; text-decoration: none;">
+                                <div
+                                    style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);">
+                                    <span
+                                        style="display: block; font-size: 24px; color: #f5a623; font-weight: bold; margin-bottom: 5px;">Tertarik
+                                        Menggunakan Aplikasi KIM Ini?</span>
+                                    <span style="font-size: 20px; color: #fff;">Hubungi Kami (Miko):
+                                        <a href="https://wa.me/6282287483950" target="_blank"
+                                            style="color: #4CAF50; font-weight: bold; text-decoration: none;">
                                             <i class="fab fa-whatsapp"></i> 0822-8748-3950
                                         </a>
                                     </span>
@@ -1317,7 +1333,7 @@
 
                         <!-- Footer Area -->
                         <div class="promo-footer">
-                            <h4 class="copyright-text">© Aplikasi KIM | DCODE TECH INDONESIA | 082287483950 | MIKO</h4>
+                            <h4 class="copyright-text">© 2026 Aplikasi KIM | DCODE TECH INDONESIA</h4>
                             <div class="promo-actions">
                                 <button onclick="openModalEditInfo()"
                                     style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.3); color:white; font-size:13px; font-weight:600; padding:8px 20px; border-radius:20px; cursor:pointer; letter-spacing:0.5px; transition:all 0.2s; display:flex; align-items:center; gap:6px; backdrop-filter:blur(4px);"><i
@@ -1371,14 +1387,21 @@
                 <div id="myModalReset" class="modal"
                     style="z-index: 1060; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);">
                     <div class="edit-modal-content" style="max-width: 400px; text-align: center; padding: 30px 20px;">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 55px; color: #ff4b2b; margin-bottom: 20px;"></i>
-                        <h3 class="edit-modal-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 15px; color: #fff;">Peringatan!</h3>
-                        <p style="color: rgba(255,255,255,0.7); font-size: 15px; margin-bottom: 30px; line-height: 1.6;">
-                            Apakah Anda yakin ingin menghapus semua data permainan dan mengulang dari awal? Data yang sudah tersimpan akan hilang.
+                        <i class="fas fa-exclamation-triangle"
+                            style="font-size: 55px; color: #ff4b2b; margin-bottom: 20px;"></i>
+                        <h3 class="edit-modal-title"
+                            style="border-bottom: none; padding-bottom: 0; margin-bottom: 15px; color: #fff;">
+                            Peringatan!</h3>
+                        <p
+                            style="color: rgba(255,255,255,0.7); font-size: 15px; margin-bottom: 30px; line-height: 1.6;">
+                            Apakah Anda yakin ingin menghapus semua data permainan dan mengulang dari awal? Data yang
+                            sudah tersimpan akan hilang.
                         </p>
                         <div class="d-flex w-100 gap-2">
                             <button class="btn-edit-cancel flex-fill" onclick="closeModalReset()">Batal</button>
-                            <button class="btn-edit-save flex-fill" style="background: linear-gradient(45deg, #ff416c, #ff4b2b); box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);" onclick="confirmResetGameState()">Ya, Hapus</button>
+                            <button class="btn-edit-save flex-fill"
+                                style="background: linear-gradient(45deg, #ff416c, #ff4b2b); box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);"
+                                onclick="confirmResetGameState()">Ya, Hapus</button>
                         </div>
                     </div>
                 </div>
@@ -1842,19 +1865,19 @@
     <script>
         // 1. Monkey patch fungsi perubah state
         const originalSetColor = setColor;
-        setColor = function(colorKey, element, skipSave) {
+        setColor = function (colorKey, element, skipSave) {
             originalSetColor(colorKey, element);
             if (!skipSave) saveGameState();
         };
 
         const originalAturanmain = aturanmain;
-        aturanmain = function(aturan, element, skipSave) {
+        aturanmain = function (aturan, element, skipSave) {
             originalAturanmain(aturan, element);
             if (!skipSave) saveGameState();
         };
 
         const originalToggleColor = toggleColor;
-        toggleColor = function(number, skipSave) {
+        toggleColor = function (number, skipSave) {
             originalToggleColor(number);
             if (!skipSave) {
                 const el = document.getElementById('number' + number);
@@ -1869,25 +1892,25 @@
         };
 
         const originalOpenModal = openModal;
-        openModal = function(skipSave) {
+        openModal = function (skipSave) {
             originalOpenModal();
             if (!skipSave) saveGameState();
         }
 
         const originalCloseModal = closeModal;
-        closeModal = function(skipSave) {
+        closeModal = function (skipSave) {
             originalCloseModal();
             if (!skipSave) saveGameState();
         }
 
         const originalOpenModalAturan = openModalAturan;
-        openModalAturan = function(skipSave) {
+        openModalAturan = function (skipSave) {
             originalOpenModalAturan();
             if (!skipSave) saveGameState();
         }
 
         const originalCloseModalAturan = closeModalAturan;
-        closeModalAturan = function(skipSave) {
+        closeModalAturan = function (skipSave) {
             originalCloseModalAturan();
             if (!skipSave) saveGameState();
         }
@@ -1917,7 +1940,7 @@
             document.body.classList.toggle('projector-mode');
             // Recalculate grid sizing after 100ms so transition can finish
             setTimeout(() => {
-                if(typeof sizeNumberGrid === 'function') {
+                if (typeof sizeNumberGrid === 'function') {
                     sizeNumberGrid();
                 }
             }, 50);
@@ -1952,7 +1975,7 @@
         // 4. Load State dari LocalStorage
         function loadGameState(state, isInitialLoad = false) {
             if (!state) return;
-            
+
             // a. Restore Map Data terlebih dahulu
             if (state.numbersMap) {
                 selectedNumbersByColor = new Map(state.numbersMap);
@@ -1968,7 +1991,7 @@
             if (state.colorKey) {
                 const el = document.querySelector(`.color[onclick*="'${state.colorKey}'"]`);
                 // KOSONGKAN selectedColorKey agar setColor tidak me-replace data Map kita yang baru ditarik dengan DOM lama!
-                selectedColorKey = ''; 
+                selectedColorKey = '';
                 setColor(state.colorKey, el, true); // true = skipSave
             }
 
@@ -2038,7 +2061,7 @@
         }
 
         // 5. Listener sinkronisasi antar Tab (Otomatis jalan saat tab lain men-save)
-        window.addEventListener('storage', function(e) {
+        window.addEventListener('storage', function (e) {
             if (e.key === 'kim_gameState' && e.newValue) {
                 loadGameState(JSON.parse(e.newValue));
             } else if (e.key === 'kim_gameState' && !e.newValue) {

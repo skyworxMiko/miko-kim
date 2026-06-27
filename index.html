@@ -53,7 +53,7 @@
         .angkaTerakhir {
             border-radius: 14px;
             flex-shrink: 0;
-            height: 150px;
+            height: 190px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -86,7 +86,7 @@
         }
 
         .resultAngkaTerakhir {
-            font-size: 90px;
+            font-size: 140px;
             font-weight: 900;
             line-height: 1;
             text-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -119,8 +119,9 @@
 
         .number-list {
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            grid-template-rows: repeat(9, 1fr);
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            grid-auto-flow: column;
             gap: 3px;
             list-style: none;
             padding: 5px;
@@ -292,7 +293,9 @@
 
         .angka-grid {
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(10, auto);
+            grid-auto-flow: column;
             gap: min(1.5vh, 10px);
             justify-items: center;
             align-items: center;
@@ -326,7 +329,18 @@
 
         .angka-grid .picked-number.filled {
             border: 2px solid currentColor;
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 15px var(--glow-color, rgba(255, 255, 255, 0.5)), inset 0 0 15px rgba(255, 255, 255, 0.3);
+            animation: pulseGlow 1.5s infinite alternate;
+            z-index: 2;
+        }
+
+        @keyframes pulseGlow {
+            from {
+                box-shadow: 0 0 10px var(--glow-color, rgba(255, 255, 255, 0.5)), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+            to {
+                box-shadow: 0 0 25px var(--glow-color, rgba(255, 255, 255, 0.8)), 0 0 15px var(--glow-color, rgba(255, 255, 255, 0.8)), inset 0 0 20px rgba(255, 255, 255, 0.6);
+            }
         }
 
         /* Warna kupon yang dipilih */
@@ -334,35 +348,35 @@
             background-color: #F7418F;
             color: white;
             border-color: #F7418F;
-            box-shadow: 0 0 10px rgba(247, 65, 143, 0.4);
+            --glow-color: #F7418F;
         }
 
         .filled.blue {
             background-color: #96C9F4;
             color: black;
             border-color: #96C9F4;
-            box-shadow: 0 0 10px rgba(150, 201, 244, 0.4);
+            --glow-color: #96C9F4;
         }
 
         .filled.green {
             background-color: green;
             color: white;
             border-color: green;
-            box-shadow: 0 0 10px rgba(0, 128, 0, 0.4);
+            --glow-color: #00ff00;
         }
 
         .filled.yellow {
             background-color: yellow;
             color: black;
             border-color: yellow;
-            box-shadow: 0 0 10px rgba(255, 255, 0, 0.4);
+            --glow-color: yellow;
         }
 
         .filled.white {
             background-color: white;
             color: black;
             border-color: white;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            --glow-color: #ffffff;
         }
 
         /* Marquee */
@@ -811,7 +825,7 @@
         }
 
         .resultAngkaTerakhir {
-            font-size: 110px;
+            font-size: 140px;
             font-weight: bold;
             line-height: 1;
             text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
@@ -1274,24 +1288,27 @@
                 const grid = document.querySelector('.number-list');
                 if (!container || !grid) return;
 
-                const cols = 10, rows = 9, pad = 20;
+                const cols = 9, rows = 10, pad = 30; // padding diperbesar
                 const w = container.clientWidth - pad;
                 const h = container.clientHeight - pad;
 
-                // Ukuran lingkaran berdasarkan lebar
-                const colGap = 2;
-                const size = Math.floor((w - colGap * (cols - 1)) / cols);
-                const fs = Math.max(11, Math.floor(size * 0.55));
+                // Ukuran lingkaran maksimal berdasarkan lebar dan tinggi
+                const colGap = 6; // gap diperbesar
+                const sizeW = Math.floor((w - colGap * (cols - 1)) / cols);
+                const sizeH = Math.floor((h - colGap * (rows - 1)) / rows);
+                const size = Math.min(sizeW, sizeH); // ambil yang paling kecil agar tidak terpotong
+                const fs = Math.max(11, Math.floor(size * 0.45));
 
-                // Gap vertikal: sisa dibagi di antara baris
-                const totalCircleH = size * rows;
-                const extraH = h - totalCircleH;
-                const rowGap = Math.min(12, Math.max(colGap, Math.floor(extraH / (rows - 1))));
+                // Hitung ulang gap aktual berdasarkan sisa ruang agar rata tengah/menyebar
+                const extraW = w - (size * cols);
+                const actualColGap = Math.floor(extraW / (cols - 1));
+                const extraH = h - (size * rows);
+                const actualRowGap = Math.floor(extraH / (rows - 1));
 
                 grid.style.gridTemplateColumns = `repeat(${cols}, ${size}px)`;
                 grid.style.gridTemplateRows = `repeat(${rows}, ${size}px)`;
-                grid.style.columnGap = colGap + 'px';
-                grid.style.rowGap = rowGap + 'px';
+                grid.style.columnGap = actualColGap + 'px';
+                grid.style.rowGap = actualRowGap + 'px';
                 grid.style.width = '100%';
                 grid.style.height = '100%';
                 grid.style.alignContent = 'space-between';

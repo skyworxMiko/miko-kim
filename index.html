@@ -94,9 +94,12 @@
         }
 
         @keyframes floatAngka {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0) scale(1);
             }
+
             50% {
                 transform: translateY(-8px) scale(1.05);
             }
@@ -269,6 +272,7 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+            overflow: hidden;
         }
 
         .resultColor {
@@ -348,6 +352,7 @@
             from {
                 box-shadow: 0 0 10px var(--glow-color, rgba(255, 255, 255, 0.5)), inset 0 0 10px rgba(255, 255, 255, 0.3);
             }
+
             to {
                 box-shadow: 0 0 25px var(--glow-color, rgba(255, 255, 255, 0.8)), 0 0 15px var(--glow-color, rgba(255, 255, 255, 0.8)), inset 0 0 20px rgba(255, 255, 255, 0.6);
             }
@@ -443,15 +448,7 @@
 
         /* Responsif */
         @media screen and (max-width: 768px) {
-            .number {
-                font-size: 14px;
-            }
 
-            .angka-grid .picked-number {
-                width: 40px;
-                height: 40px;
-                font-size: 16px;
-            }
 
             .resultColor,
             .resultAturan {
@@ -999,15 +996,100 @@
             animation: rotateBg 12s linear infinite;
             pointer-events: none;
         }
+
+        /* Responsif untuk Mobile */
+        @media screen and (max-width: 768px) {
+            .main-wrapper {
+                height: auto !important;
+                min-height: 100vh;
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+            }
+            .left-panel, .judulPermainan {
+                height: auto;
+                min-height: 100vh;
+                overflow: visible;
+            }
+            .angkaDitekan {
+                min-height: 380px;
+            }
+            
+            .promo-title {
+                font-size: 34px;
+                letter-spacing: 1px;
+            }
+
+            .promo-subtitle {
+                font-size: 20px;
+            }
+
+            .promo-body {
+                padding: 20px 10px;
+            }
+
+            .contact-item {
+                font-size: 16px;
+                padding: 10px 20px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .highlight-text {
+                font-size: 24px;
+            }
+
+            .promo-tagline p {
+                font-size: 16px;
+                text-align: center;
+            }
+
+            .promo-message-box {
+                padding: 15px;
+                flex-direction: column;
+                text-align: center;
+                border-radius: 15px;
+                border-left: none;
+                border-top: 5px solid #e94560;
+                max-width: 95%;
+            }
+
+            .message-icon {
+                font-size: 30px;
+                margin-bottom: 5px;
+            }
+
+            .promo-contact {
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+
+            .promo-footer {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .promo-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .promo-actions button {
+                flex: 1;
+                justify-content: center;
+                text-align: center;
+                padding: 12px 10px !important;
+            }
+        }
     </style>
 </head>
 
 <body>
     <!-- Content -->
-    <div class="container-fluid p-0 m-0" style="height: 100vh; overflow-x: hidden; overflow-y: auto;">
-        <div class="card shadow border-0 rounded-0 h-100">
-            <div class="card-body p-0 h-100">
-                <div class="row g-0 h-100">
+    <div class="container-fluid p-0 m-0 main-wrapper" style="height: 100vh; overflow: hidden;">
+        <div class="card shadow border-0 rounded-0 min-vh-100">
+            <div class="card-body p-0 min-vh-100">
+                <div class="row g-0 min-vh-100">
                     <!-- KIRI: Kontrol Konsumen -->
                     <div class="col-lg-4 col-md-4 col-sm-12 left-panel">
                         <!-- Area Angka Terakhir -->
@@ -1075,10 +1157,13 @@
                     <!-- KANAN: Tampilan Angka Terpilih & Marquee -->
                     <div class="col-lg-8 col-md-8 col-sm-12 judulPermainan">
                         <!-- Aturan Aktif & Warna -->
-                        <div class="d-flex justify-content-center align-items-center gap-4 w-100 mb-2" style="flex-shrink: 0;">
-                            <div class="resultColor mb-0" id="resultColor" style="font-size: 35px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
+                        <div class="d-flex justify-content-center align-items-center gap-4 w-100 mb-2"
+                            style="flex-shrink: 0;">
+                            <div class="resultColor mb-0" id="resultColor"
+                                style="font-size: 35px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
                             <div class="text-white fw-bold mb-0" style="font-size: 30px;">-</div>
-                            <div class="resultAturan mb-0" id="resultAturan" style="font-size: 28px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
+                            <div class="resultAturan mb-0" id="resultAturan"
+                                style="font-size: 28px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
                         </div>
 
                         <!-- Grid Angka Terpilih -->
@@ -1183,7 +1268,7 @@
 
                         <!-- Footer Area -->
                         <div class="promo-footer">
-                            <h4 class="copyright-text">© Aplikasi KIM | DCODE TECH INDONESIA | 082287483950</h4>
+                            <h4 class="copyright-text">© Aplikasi KIM | DCODE TECH INDONESIA | 082287483950 | MIKO</h4>
                             <div class="promo-actions">
                                 <button onclick="openModalEditInfo()"
                                     style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.3); color:white; font-size:13px; font-weight:600; padding:8px 20px; border-radius:20px; cursor:pointer; letter-spacing:0.5px; transition:all 0.2s; display:flex; align-items:center; gap:6px; backdrop-filter:blur(4px);"><i
@@ -1226,9 +1311,9 @@
                             <textarea id="input-pesan" class="form-control custom-input" rows="3"
                                 placeholder="Contoh: Selamat Datang di Acara KIM Dendang Minang"></textarea>
                         </div>
-                        <div class="d-flex justify-content-end gap-2 mt-2">
-                            <button class="btn-edit-cancel" onclick="closeModalEditInfo()">Batal</button>
-                            <button class="btn-edit-save" onclick="saveInfo()">Simpan</button>
+                        <div class="d-flex w-100 gap-2 mt-4">
+                            <button class="btn-edit-cancel flex-fill" onclick="closeModalEditInfo()">Batal</button>
+                            <button class="btn-edit-save flex-fill" onclick="saveInfo()">Simpan</button>
                         </div>
                     </div>
                 </div>
@@ -1298,7 +1383,7 @@
                     const cols = 9, rows = 10, pad = 30;
                     const w = containerL.clientWidth - pad;
                     const h = containerL.clientHeight - pad;
-                    
+
                     const colGap = 6;
                     const sizeW = Math.floor((w - colGap * (cols - 1)) / cols);
                     const sizeH = Math.floor((h - colGap * (rows - 1)) / rows);
@@ -1330,16 +1415,16 @@
                 const containerR = document.querySelector('.angka-grid-wrapper');
                 const gridR = document.querySelector('.angka-grid');
                 if (containerR && gridR) {
-                    const cols = 9, rows = 10, pad = 10; 
+                    const cols = 9, rows = 10, pad = 10;
                     const w = containerR.clientWidth - pad;
                     const h = containerR.clientHeight - pad;
-                    
+
                     const colGap = 4;
                     const sizeW = Math.floor((w - colGap * (cols - 1)) / cols);
                     const sizeH = Math.floor((h - colGap * (rows - 1)) / rows);
-                    const size = Math.min(sizeW, sizeH, 85); 
-                    
-                    const fs = Math.floor(size * 0.55); 
+                    const size = Math.min(sizeW, sizeH, 85);
+
+                    const fs = Math.floor(size * 0.55);
                     const fsSingle = Math.floor(size * 0.75);
 
                     const extraW = w - (size * cols);

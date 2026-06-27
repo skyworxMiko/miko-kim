@@ -308,25 +308,25 @@
         .angka-grid {
             display: grid;
             grid-template-columns: repeat(9, 1fr);
-            grid-template-rows: repeat(10, auto);
+            grid-template-rows: repeat(10, 1fr);
             grid-auto-flow: column;
-            gap: min(1.5vh, 10px);
-            justify-items: center;
-            align-items: center;
-            align-content: center;
+            gap: 1vh;
+            justify-items: stretch;
+            align-items: stretch;
+            align-content: stretch;
             width: 100%;
             height: 100%;
-            margin: 0 auto;
+            margin: 0;
         }
 
         .angka-grid .picked-number {
-            width: var(--circle-size, min(6vw, 7.5vh, 85px));
-            height: var(--circle-size, min(6vw, 7.5vh, 85px));
-            font-size: var(--font-size, min(4.2vw, 5vh, 52px));
+            width: 100%;
+            height: 100%;
+            font-size: min(4.5vw, 6vh);
             letter-spacing: -1.5px;
             line-height: 1;
             font-weight: 900;
-            border-radius: 50%;
+            border-radius: 1.5vh;
             background-color: transparent;
             color: transparent;
             border: 1px solid transparent;
@@ -337,7 +337,7 @@
         }
 
         .angka-grid .picked-number.single-digit {
-            font-size: var(--font-size-single, min(5.5vw, 6vh, 70px));
+            font-size: min(5.8vw, 7vh);
             letter-spacing: normal;
         }
 
@@ -1468,39 +1468,8 @@
                     });
                 }
 
-                // PANEL KANAN
-                const containerR = document.querySelector('.angka-grid-wrapper');
-                const gridR = document.querySelector('.angka-grid');
-                if (containerR && gridR) {
-                    const cols = 9, rows = 10, pad = 10;
-                    const w = containerR.clientWidth - pad;
-                    const h = containerR.clientHeight - pad;
-
-                    const colGap = 4;
-                    const sizeW = Math.floor((w - colGap * (cols - 1)) / cols);
-                    const sizeH = Math.floor((h - colGap * (rows - 1)) / rows);
-                    const size = Math.min(sizeW, sizeH, 85);
-
-                    const fs = Math.floor(size * 0.55);
-                    const fsSingle = Math.floor(size * 0.75);
-
-                    const extraW = w - (size * cols);
-                    const actualColGap = Math.max(colGap, Math.floor(extraW / (cols - 1)));
-                    const extraH = h - (size * rows);
-                    const actualRowGap = Math.max(colGap, Math.floor(extraH / (rows - 1)));
-
-                    gridR.style.gridTemplateColumns = `repeat(${cols}, ${size}px)`;
-                    gridR.style.gridTemplateRows = `repeat(${rows}, ${size}px)`;
-                    gridR.style.columnGap = actualColGap + 'px';
-                    gridR.style.rowGap = actualRowGap + 'px';
-                    gridR.style.alignContent = 'center';
-                    gridR.style.justifyContent = 'center';
-
-                    // Set CSS Variables untuk ukuran dinamis
-                    gridR.style.setProperty('--circle-size', size + 'px');
-                    gridR.style.setProperty('--font-size', fs + 'px');
-                    gridR.style.setProperty('--font-size-single', fsSingle + 'px');
-                }
+                // PANEL KANAN (Dikelola penuh oleh CSS Grid Fleksibel)
+                // Kita tidak lagi memaksakan ukuran piksel statis agar grid dapat melebar menutupi layar sepenuhnya.
             }
 
             // Jalankan setelah render dan saat resize

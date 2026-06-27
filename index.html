@@ -90,6 +90,16 @@
             font-weight: 900;
             line-height: 1;
             text-shadow: 0 0 30px rgba(255, 255, 255, 0.5), 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: floatAngka 2.5s ease-in-out infinite;
+        }
+
+        @keyframes floatAngka {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-8px) scale(1.05);
+            }
         }
 
         /* --- Grid Tombol Angka --- */
@@ -824,12 +834,6 @@
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        .resultAngkaTerakhir {
-            font-size: 140px;
-            font-weight: bold;
-            line-height: 1;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
-        }
 
         .edit-modal-title {
             font-size: 24px;
